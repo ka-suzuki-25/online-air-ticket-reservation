@@ -1,29 +1,42 @@
-import os
 
-from flask import Flask
+import os
+from flask import Flask, render_template
+
+from .database import init_db
 
 
 def create_app(test_config=None):
-    # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+
     app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+        SECRET_KEY=os.environ.get(
+            "SECRET_KEY",
+            "aurelia-development-secret-change-before-deployment"
+        )
     )
 
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
+    if test_config is not None:
+        app.config.update(test_config)
 
-    # ensure the instance folder exists
+    # Create the instance directory if it does not exist.
     os.makedirs(app.instance_path, exist_ok=True)
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
+    # Initialize the account database.
+    init_db(app)
+
+    # Register authentication routes.
+    from .routes.auth import auth_bp
+    app.register_blueprint(auth_bp)
+
+    @app.route("/")
+    def home():
+        return render_template("index.html")
+
+    @app.route("/health")
+    def health():
+        return {
+            "status": "running",
+            "application": "Aurelia Airways"
+        }
 
     return app
