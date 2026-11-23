@@ -13,8 +13,9 @@
         <p>Register your airline staff account.</p>
     </div>
 
-    <form class="registration-form" method="POST">
-
+<form class="registration-form"
+      method="POST"
+      action="{{ url_for('auth.staff_register') }}">
         <div class="form-grid">
 
             <div class="form-field">
@@ -46,6 +47,16 @@
                 <input type="text" id="airline"
                        name="airline" required>
             </div>
+            <div class="form-field full-width">
+    <label for="invitation_code">Staff Invitation Code *</label>
+    <input
+        type="password"
+        id="invitation_code"
+        name="invitation_code"
+        autocomplete="off"
+        required
+    >
+</div>
 
             <div class="form-field">
                 <label for="password">Password *</label>

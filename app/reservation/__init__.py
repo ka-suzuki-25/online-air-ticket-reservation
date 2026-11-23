@@ -32,6 +32,10 @@ def create_app(test_config=None):
     from .routes.reviews import reviews_bp
     app.register_blueprint(reviews_bp)
 
+    # Register staff dashboard routes.
+    from .routes.staff import staff_bp
+    app.register_blueprint(staff_bp)
+
     @app.route("/")
     def home():
         return render_template("index.html")

@@ -56,6 +56,30 @@ def init_db(app):
         )
     """)
 
+    # Add staff-specific fields to existing user accounts.
+    # These checks make the migration safe for existing databases.
+    user_columns = {
+        row[1]
+        for row in connection.execute("PRAGMA table_info(users)").fetchall()
+    }
+
+    if "username" not in user_columns:
+        connection.execute(
+            "ALTER TABLE users ADD COLUMN username TEXT"
+        )
+
+    if "airline" not in user_columns:
+        connection.execute(
+            "ALTER TABLE users ADD COLUMN airline TEXT"
+        )
+
+    # Staff usernames must be unique.
+    connection.execute("""
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username
+        ON users(username)
+        WHERE username IS NOT NULL
+    """)
+
     # Flight information.
     connection.execute("""
         CREATE TABLE IF NOT EXISTS flights (
