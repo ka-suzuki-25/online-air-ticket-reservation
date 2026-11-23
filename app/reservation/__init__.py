@@ -21,12 +21,16 @@ def create_app(test_config=None):
     # Create the instance directory if it does not exist.
     os.makedirs(app.instance_path, exist_ok=True)
 
-    # Initialize the account database.
+    # Initialize the database.
     init_db(app)
 
     # Register authentication routes.
     from .routes.auth import auth_bp
     app.register_blueprint(auth_bp)
+
+    # Register flight review routes.
+    from .routes.reviews import reviews_bp
+    app.register_blueprint(reviews_bp)
 
     @app.route("/")
     def home():
