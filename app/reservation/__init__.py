@@ -18,23 +18,25 @@ def create_app(test_config=None):
     if test_config is not None:
         app.config.update(test_config)
 
-    # Create the instance directory if it does not exist.
     os.makedirs(app.instance_path, exist_ok=True)
 
-    # Initialize the database.
     init_db(app)
 
     # Register authentication routes.
     from .routes.auth import auth_bp
     app.register_blueprint(auth_bp)
 
-    # Register flight review routes.
+    # Register customer review routes.
     from .routes.reviews import reviews_bp
     app.register_blueprint(reviews_bp)
 
     # Register staff dashboard routes.
     from .routes.staff import staff_bp
     app.register_blueprint(staff_bp)
+
+    # Register customer spending routes.
+    from .routes.spending import spending_bp
+    app.register_blueprint(spending_bp)
 
     @app.route("/")
     def home():
