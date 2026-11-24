@@ -1,0 +1,546 @@
+
+{% extends "base.html" %}
+
+{% block title %}My Spending | Aurelia Airways{% endblock %}
+
+{% block content %}
+
+<style>
+    .spending-page {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 65px 24px 85px;
+        color: #263238;
+    }
+
+    .spending-intro {
+        margin-bottom: 38px;
+    }
+
+    .spending-eyebrow,
+    .section-eyebrow {
+        color: #a47c45;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        margin-bottom: 12px;
+    }
+
+    .spending-intro h1 {
+        font-size: 42px;
+        margin: 0 0 12px;
+    }
+
+    .spending-intro p,
+    .date-description {
+        color: #68747c;
+        line-height: 1.7;
+    }
+
+    .spending-card {
+        background: #ffffff;
+        border: 1px solid #e7e9eb;
+        border-radius: 12px;
+        padding: 32px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.035);
+    }
+
+    .spending-card h2 {
+        font-size: 25px;
+        margin: 0 0 12px;
+    }
+
+    .report-range {
+        color: #7b858c;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .spending-total {
+        font-size: 46px;
+        font-weight: 700;
+        color: #263c50;
+        margin: 20px 0;
+    }
+
+    .spending-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .stat-box {
+        background: #f7f8f9;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .stat-label {
+        color: #78838a;
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .stat-value {
+        font-size: 22px;
+        font-weight: 700;
+        color: #263c50;
+    }
+
+    .date-form {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        align-items: end;
+        margin-top: 24px;
+    }
+
+    .date-field label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 9px;
+    }
+
+    .date-field input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 13px;
+        border: 1px solid #d9dfe3;
+        border-radius: 7px;
+        font-size: 14px;
+        background: #fff;
+    }
+
+    .spending-button {
+        display: inline-block;
+        padding: 13px 22px;
+        border: none;
+        border-radius: 7px;
+        background: #263c50;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .spending-button:hover {
+        background: #3b566d;
+    }
+
+    .reset-button {
+        background: #e9edf0;
+        color: #263c50;
+    }
+
+    .reset-button:hover {
+        background: #dce3e8;
+    }
+
+    .date-error {
+        padding: 13px 16px;
+        background: #fff1f0;
+        color: #a33c32;
+        border-radius: 7px;
+        margin: 18px 0;
+        font-size: 14px;
+    }
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        margin-top: 22px;
+    }
+
+    .spending-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 450px;
+    }
+
+    .spending-table th,
+    .spending-table td {
+        padding: 15px 12px;
+        border-bottom: 1px solid #edf0f2;
+        text-align: left;
+        font-size: 14px;
+    }
+
+    .spending-table th {
+        color: #71808a;
+        font-size: 12px;
+        letter-spacing: 1px;
+    }
+
+    .spending-table td:last-child,
+    .spending-table th:last-child {
+        text-align: right;
+    }
+
+    .spending-table tfoot td {
+        font-weight: 700;
+        background: #f7f8f9;
+        border-bottom: none;
+    }
+
+    .empty-message {
+        text-align: center !important;
+        color: #7b858c;
+        padding: 25px !important;
+    }
+
+    @media (max-width: 600px) {
+        .spending-page {
+            padding: 42px 16px;
+        }
+
+        .spending-card {
+            padding: 23px 17px;
+        }
+
+        .spending-intro h1 {
+            font-size: 34px;
+        }
+
+        .spending-total {
+            font-size: 38px;
+        }
+
+        .spending-stats,
+        .date-form {
+            grid-template-columns: 1fr;
+        }
+
+        .spending-button {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    }
+</style>
+
+
+<div class="spending-page">
+
+    <!-- PAGE INTRODUCTION -->
+    <section class="spending-intro">
+
+        <div class="spending-eyebrow">
+            YOUR TRAVEL FINANCES
+        </div>
+
+        <h1>My Spending</h1>
+
+        <p>
+            Hello {{ customer.first_name }},
+            review your ticket purchases and track your travel spending.
+        </p>
+
+    </section>
+
+
+    <!-- LAST 12 MONTHS OVERVIEW -->
+    <section class="spending-card">
+
+        <div class="section-eyebrow">
+            SPENDING OVERVIEW
+        </div>
+
+        <h2>Your Last 12 Months</h2>
+
+        <p class="report-range">
+            {{ annual_start }} through {{ today }}
+        </p>
+
+        <div class="spending-total">
+            ${{ "%.2f"|format(annual_report.total) }}
+        </div>
+
+        <div class="spending-stats">
+
+            <div class="stat-box">
+
+                <div class="stat-label">
+                    Total Tickets Purchased
+                </div>
+
+                <div class="stat-value">
+                    {{ annual_report.ticket_count }}
+                </div>
+
+            </div>
+
+            <div class="stat-box">
+
+                <div class="stat-label">
+                    Average Ticket Cost
+                </div>
+
+                <div class="stat-value">
+
+                    {% if annual_report.ticket_count > 0 %}
+                        ${{ "%.2f"|format(
+                            annual_report.total / annual_report.ticket_count
+                        ) }}
+                    {% else %}
+                        $0.00
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CUSTOM DATE RANGE FORM -->
+    <section class="spending-card">
+
+        <div class="section-eyebrow">
+            CUSTOM REPORT
+        </div>
+
+        <h2>Select a Date Range</h2>
+
+        <p class="date-description">
+            Choose your start and end dates to calculate spending
+            for a specific period.
+        </p>
+
+        {% if date_error %}
+
+            <div class="date-error">
+                {{ date_error }}
+            </div>
+
+        {% endif %}
+
+        <form
+            class="date-form"
+            method="GET"
+            action="{{ url_for('spending.dashboard') }}"
+        >
+
+            <div class="date-field">
+
+                <label for="start_date">
+                    Start Date
+                </label>
+
+                <input
+                    type="date"
+                    id="start_date"
+                    name="start_date"
+                    value="{{ start_date }}"
+                    max="{{ today }}"
+                    required
+                >
+
+            </div>
+
+            <div class="date-field">
+
+                <label for="end_date">
+                    End Date
+                </label>
+
+                <input
+                    type="date"
+                    id="end_date"
+                    name="end_date"
+                    value="{{ end_date }}"
+                    min="{{ start_date }}"
+                    max="{{ today }}"
+                    required
+                >
+
+            </div>
+
+            <button
+                class="spending-button"
+                type="submit"
+            >
+                Apply Dates
+            </button>
+
+            <a
+                class="spending-button reset-button"
+                href="{{ url_for('spending.dashboard') }}"
+            >
+                Reset
+            </a>
+
+        </form>
+
+    </section>
+
+
+    <!-- CUSTOM RANGE RESULTS -->
+    {% if custom_range and not date_error %}
+
+        <section class="spending-card">
+
+            <div class="section-eyebrow">
+                SELECTED PERIOD
+            </div>
+
+            <h2>Your Custom Spending Report</h2>
+
+            <p class="report-range">
+                {{ start_date }} through {{ end_date }}
+            </p>
+
+            <div class="spending-total">
+                ${{ "%.2f"|format(report.total) }}
+            </div>
+
+            <div class="spending-stats">
+
+                <div class="stat-box">
+
+                    <div class="stat-label">
+                        Total Tickets Purchased
+                    </div>
+
+                    <div class="stat-value">
+                        {{ report.ticket_count }}
+                    </div>
+
+                </div>
+
+                <div class="stat-box">
+
+                    <div class="stat-label">
+                        Average Ticket Cost
+                    </div>
+
+                    <div class="stat-value">
+
+                        {% if report.ticket_count > 0 %}
+                            ${{ "%.2f"|format(
+                                report.total / report.ticket_count
+                            ) }}
+                        {% else %}
+                            $0.00
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    {% endif %}
+
+
+    <!-- MONTHLY SPENDING BREAKDOWN -->
+    <section class="spending-card">
+
+        <div class="section-eyebrow">
+            MONTHLY ACTIVITY
+        </div>
+
+        {% if custom_range and not date_error %}
+
+            <h2>Spending by Month</h2>
+
+            <p class="date-description">
+                Your monthly ticket spending for the selected date range.
+            </p>
+
+            {% set displayed_report = report %}
+
+        {% else %}
+
+            <h2>Last Six Months</h2>
+
+            <p class="date-description">
+                Your monthly ticket spending, including months with no purchases.
+            </p>
+
+            {% set displayed_report = six_month_report %}
+
+        {% endif %}
+
+
+        <div class="table-wrapper">
+
+            <table class="spending-table">
+
+                <thead>
+
+                    <tr>
+                        <th>MONTH</th>
+                        <th>TICKETS</th>
+                        <th>AMOUNT SPENT</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for month in displayed_report.monthly_breakdown %}
+
+                        <tr>
+
+                            <td>
+                                {{ month.month }}
+                            </td>
+
+                            <td>
+                                {{ month.ticket_count }}
+                            </td>
+
+                            <td>
+                                ${{ "%.2f"|format(month.total) }}
+                            </td>
+
+                        </tr>
+
+                    {% else %}
+
+                        <tr>
+
+                            <td colspan="3" class="empty-message">
+                                No spending records found for this period.
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+                <tfoot>
+
+                    <tr>
+
+                        <td>Total</td>
+
+                        <td>
+                            {{ displayed_report.ticket_count }}
+                        </td>
+
+                        <td>
+                            ${{ "%.2f"|format(displayed_report.total) }}
+                        </td>
+
+                    </tr>
+
+                </tfoot>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
