@@ -1,7 +1,10 @@
 import os
 
 from flask import Flask
+
 from . import database
+from .routes import airports
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -22,6 +25,9 @@ def create_app(test_config=None):
 
     # close the MySQL connection after each request
     database.init_app(app)
+
+    # register pages
+    app.register_blueprint(airports.bp)
 
     # a simple page that says hello
     @app.route('/hello')

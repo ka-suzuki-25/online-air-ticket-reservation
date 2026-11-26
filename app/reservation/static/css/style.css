@@ -326,6 +326,25 @@ a {
     box-shadow: 0 0 0 3px rgba(198, 165, 107, 0.14);
 }
 
+.field select {
+    width: 100%;
+    min-width: 0;
+    height: 55px;
+    padding: 0 15px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    outline: none;
+    color: var(--navy);
+    background: var(--white);
+    font-size: 13px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.field select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(198, 165, 107, 0.14);
+}
+
 .search-button {
     min-height: 55px;
     white-space: nowrap;
@@ -572,7 +591,8 @@ a {
     margin-bottom: 8px;
 }
 
-.auth-form .field input {
+.auth-form .field input,
+.auth-form .field select {
     height: 51px;
     font-size: 13px;
 }

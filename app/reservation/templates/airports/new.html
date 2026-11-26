@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Add Airport | Aurelia Airways{% endblock %}
+
+{% block content %}
+<section>
+
+    <div class="auth-panel">
+        <div class="auth-form-container">
+
+            <p class="eyebrow">NEW AIRPORT</p>
+            <h2>Add a new airport</h2>
+            <p class="auth-subtitle">Enter the airport details below.</p>
+
+            <form method="post" class="auth-form">
+
+                <div class="field">
+                    <label for="name">Airport name</label>
+                    <input type="text" id="name" name="name" maxlength="100"
+                           placeholder="JFK" value="{{ request.form.get('name', '') }}" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="field">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city" maxlength="100"
+                               placeholder="New York" value="{{ request.form.get('city', '') }}" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="country">Country</label>
+                        <input type="text" id="country" name="country" maxlength="100"
+                               placeholder="USA" value="{{ request.form.get('country', '') }}" required>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="type">Type</label>
+                    <select id="type" name="type" required>
+                        {% for t in airport_types %}
+                            <option value="{{ t }}"
+                                {% if request.form.get('type') == t %}selected{% endif %}>{{ t }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="primary-button auth-submit">
+                    Add Airport <span>→</span>
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+</section>
+{% endblock %}
