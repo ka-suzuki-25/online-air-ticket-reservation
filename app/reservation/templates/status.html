@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Flight status{% endblock %}
+{% block content %}
+<h1>Check flight status</h1>
+<form method="get">
+  <label>Airline
+    <input name="airline_name" value="{{ airline_name }}" placeholder="Jet Blue">
+  </label>
+  <label>Flight number
+    <input name="flight_number" value="{{ flight_number }}" placeholder="B6101">
+  </label>
+  <label>Departure or arrival date
+    <input type="date" name="on_date" value="{{ on_date }}">
+  </label>
+  <button type="submit">Check status</button>
+</form>
+
+{% if searched %}
+<h2>Results</h2>
+{% if results %}
+<table>
+  <tr><th>Airline</th><th>Flight</th><th>From</th><th>To</th>
+      <th>Departs</th><th>Arrives</th><th>Status</th></tr>
+  {% for f in results %}
+  <tr>
+    <td>{{ f.airline_name }}</td>
+    <td>{{ f.flight_number }}</td>
+    <td>{{ f.dep_airport }}</td>
+    <td>{{ f.arr_airport }}</td>
+    <td>{{ f.dep_datetime }}</td>
+    <td>{{ f.arr_datetime }}</td>
+    <td>{{ f.status }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="muted">No flights matched.</p>
+{% endif %}
+{% endif %}
+{% endblock %}
