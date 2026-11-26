@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}My flights{% endblock %}
+{% block content %}
+<h1>My flights</h1>
+
+<form method="get">
+  <label>Show
+    <select name="show">
+      <option value="future" {% if show == 'future' %}selected{% endif %}>Future flights</option>
+      <option value="past"   {% if show == 'past'   %}selected{% endif %}>Past flights</option>
+      <option value="all"    {% if show == 'all'    %}selected{% endif %}>All flights</option>
+    </select>
+  </label>
+  <label>From date <input type="date" name="date_from" value="{{ date_from }}"></label>
+  <label>To date <input type="date" name="date_to" value="{{ date_to }}"></label>
+  <label>Source <input name="source" value="{{ source }}" placeholder="JFK or New York"></label>
+  <label>Destination <input name="destination" value="{{ destination }}" placeholder="PVG or Shanghai"></label>
+  <button type="submit">Apply</button>
+</form>
+
+{% if rows %}
+<table>
+  <tr><th>Ticket</th><th>Airline</th><th>Flight</th><th>From</th><th>To</th>
+      <th>Departs</th><th>Arrives</th><th>Status</th><th>Paid</th><th></th></tr>
+  {% for t in rows %}
+  <tr>
+    <td>{{ t.ticket_id }}</td>
+    <td>{{ t.airline_name }}</td>
+    <td>{{ t.flight_number }}</td>
+    <td>{{ t.dep_airport }} <span class="muted">({{ t.dep_city }})</span></td>
+    <td>{{ t.arr_airport }} <span class="muted">({{ t.arr_city }})</span></td>
+    <td>{{ t.dep_datetime }}</td>
+    <td>{{ t.arr_datetime }}</td>
+    <td>{{ t.status }}</td>
+    <td>${{ t.sold_price }}</td>
+    <td>
+      {% if t.cancellable %}
+      <form method="post" action="{{ url_for('customer.cancel') }}" style="padding:0;border:0;background:none">
+        <input type="hidden" name="ticket_id" value="{{ t.ticket_id }}">
+        <button class="danger" type="submit">Cancel trip</button>
+      </form>
+      {% else %}
+      <span class="muted">Not cancellable</span>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="muted">No tickets matched.</p>
+{% endif %}
+{% endblock %}
