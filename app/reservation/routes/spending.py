@@ -31,14 +31,16 @@ def get_logged_in_customer():
 
     db = get_db()
 
-    return db.execute(
-        """
-        SELECT id, email, first_name, role
-        FROM users
-        WHERE id = ?
-        """,
-        (user_id,)
-    ).fetchone()
+    with db.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT id, email, first_name, role
+            FROM users
+            WHERE id = ?
+            """,
+            (user_id,)
+        )
+        return cursor.fetchone()
 
 
 def subtract_one_year(value):
@@ -81,44 +83,48 @@ def get_spending_data(customer_email, start_date, end_date):
     # The upper boundary is exclusive so the entire end date is included.
     end_exclusive = end_date + timedelta(days=1)
 
-    total_row = db.execute(
-        """
-        SELECT
-            COALESCE(SUM(sold_price), 0) AS total_spending,
-            COUNT(*) AS ticket_count
-        FROM tickets
-        WHERE customer_email = ?
-          AND purchased_at IS NOT NULL
-          AND datetime(purchased_at) >= datetime(?)
-          AND datetime(purchased_at) < datetime(?)
-        """,
-        (
-            customer_email,
-            start_date.isoformat(),
-            end_exclusive.isoformat()
+    with db.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT
+                COALESCE(SUM(sold_price), 0) AS total_spending,
+                COUNT(*) AS ticket_count
+            FROM tickets
+            WHERE customer_email = ?
+            AND purchased_at IS NOT NULL
+            AND datetime(purchased_at) >= datetime(?)
+            AND datetime(purchased_at) < datetime(?)
+            """,
+            (
+                customer_email,
+                start_date.isoformat(),
+                end_exclusive.isoformat()
+            )
         )
-    ).fetchone()
+        total_row = cursor.fetchone()
 
-    monthly_rows = db.execute(
-        """
-        SELECT
-            substr(purchased_at, 1, 7) AS spending_month,
-            COALESCE(SUM(sold_price), 0) AS monthly_total,
-            COUNT(*) AS ticket_count
-        FROM tickets
-        WHERE customer_email = ?
-          AND purchased_at IS NOT NULL
-          AND datetime(purchased_at) >= datetime(?)
-          AND datetime(purchased_at) < datetime(?)
-        GROUP BY substr(purchased_at, 1, 7)
-        ORDER BY spending_month
-        """,
-        (
-            customer_email,
-            start_date.isoformat(),
-            end_exclusive.isoformat()
+    with db.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT
+                substr(purchased_at, 1, 7) AS spending_month,
+                COALESCE(SUM(sold_price), 0) AS monthly_total,
+                COUNT(*) AS ticket_count
+            FROM tickets
+            WHERE customer_email = ?
+            AND purchased_at IS NOT NULL
+            AND datetime(purchased_at) >= datetime(?)
+            AND datetime(purchased_at) < datetime(?)
+            GROUP BY substr(purchased_at, 1, 7)
+            ORDER BY spending_month
+            """,
+            (
+                customer_email,
+                start_date.isoformat(),
+                end_exclusive.isoformat()
+            )
         )
-    ).fetchall()
+        monthly_rows = cursor.fetchall()
 
     monthly_totals = {
         row["spending_month"]: {

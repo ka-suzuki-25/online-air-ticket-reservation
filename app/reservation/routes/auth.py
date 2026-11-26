@@ -64,20 +64,21 @@ def register():
         db = get_db()
 
         try:
-            db.execute(
-                """
-                INSERT INTO users
-                (first_name, last_name, email, password_hash, role)
-                VALUES (?, ?, ?, ?, ?)
-                """,
-                (
-                    first_name,
-                    last_name,
-                    email,
-                    password_hash,
-                    "customer"
+            with db.cursor() as cursor:
+                cursor.execute(
+                    """
+                    INSERT INTO users
+                    (first_name, last_name, email, password_hash, role)
+                    VALUES (?, ?, ?, ?, ?)
+                    """,
+                    (
+                        first_name,
+                        last_name,
+                        email,
+                        password_hash,
+                        "customer"
+                    )
                 )
-            )
 
             db.commit()
 
@@ -112,10 +113,12 @@ def login():
 
         db = get_db()
 
-        user = db.execute(
-            "SELECT * FROM users WHERE email = ?",
-            (email,)
-        ).fetchone()
+        with db.cursor() as cursor:
+            cursor.execute(
+                "SELECT * FROM Customer WHERE email = %s",
+                (email,)
+            )
+            user = cursor.fetchone()
 
         if user is None or not check_password_hash(
             user["password_hash"], password
@@ -214,23 +217,24 @@ def staff_register():
         db = get_db()
 
         try:
-            db.execute(
-                """
-                INSERT INTO users
-                (username, first_name, last_name, email,
-                 password_hash, role, airline)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
-                (
-                    username,
-                    first_name,
-                    last_name,
-                    email,
-                    password_hash,
-                    "staff",
-                    airline
+            with db.cursor() as cursor:
+                cursor.execute(
+                    """
+                    INSERT INTO users
+                    (username, first_name, last_name, email,
+                    password_hash, role, airline)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        username,
+                        first_name,
+                        last_name,
+                        email,
+                        password_hash,
+                        "staff",
+                        airline
+                    )
                 )
-            )
 
             db.commit()
 
