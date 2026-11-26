@@ -3,16 +3,16 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 
 from ..database import get_db
 
-bp = Blueprint("airports", __name__, url_prefix="/staff/airports")
+airport_bp = Blueprint("airport", __name__, url_prefix="/staff/airport")
 
 
 AIRPORT_TYPES = ["domestic", "international", "both"]
 
 
-@bp.route("/new", methods=["GET", "POST"])
+@airport_bp.route("/new", methods=["GET", "POST"])
 def add_airport():
     if session.get("user_role") != "staff":
-        flash("Only airline staff can add airports.", "error")
+        flash("Only airline staff can add a airport.", "error")
         return redirect(url_for("hello"))
 
     if request.method == "POST":
@@ -42,7 +42,7 @@ def add_airport():
                     )
                 db.commit()
                 flash(f"Airport {name} was added.", "success")
-                return redirect(url_for("airports.add_airport"))
+                return redirect(url_for("airport.add_airport"))
             except pymysql.err.IntegrityError:
                 # An airport with the same name (primary key) already exists.
                 db.rollback()
@@ -50,4 +50,4 @@ def add_airport():
 
         flash(error, "error")
 
-    return render_template("airports/new.html", airport_types=AIRPORT_TYPES)
+    return render_template("airport/new.html", airport_types=AIRPORT_TYPES)
