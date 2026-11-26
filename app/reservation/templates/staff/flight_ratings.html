@@ -1,0 +1,121 @@
+
+{% extends "base.html" %}
+
+{% block title %}Flight Ratings | Aurelia Airways{% endblock %}
+
+{% block content %}
+
+<section class="form-page">
+
+    <div class="form-heading">
+        <p class="eyebrow">AIRLINE STAFF DASHBOARD</p>
+        <h1>Flight Ratings & Reviews</h1>
+        <p>
+            Welcome, {{ staff_name }}.
+            Review customer feedback for {{ airline }} flights.
+        </p>
+    </div>
+
+    {% if flight_details %}
+
+        {% for item in flight_details %}
+
+            {% set flight = item.flight %}
+
+            <article class="flight-rating-card">
+
+                <div class="flight-rating-header">
+                    <div>
+                        <p class="eyebrow">{{ flight.airline_name }}</p>
+                        <h2>{{ flight.flight_number }}</h2>
+                        <p>
+                            {{ flight.dep_airport }}
+                            → {{ flight.arr_airport }}
+                        </p>
+                        <p>
+                            Departure: {{ flight.dep_datetime }}
+                        </p>
+                    </div>
+
+                    <div class="flight-rating-summary">
+                        {% if flight.review_count > 0 %}
+                            <h2>{{ flight.average_rating }} / 5</h2>
+                            <p>Average customer rating</p>
+                        {% else %}
+                            <h2>— / 5</h2>
+                            <p>No ratings yet</p>
+                        {% endif %}
+
+                        <p>
+                            {{ flight.review_count }}
+                            {% if flight.review_count == 1 %}
+                                review
+                            {% else %}
+                                reviews
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flight-review-list">
+
+                    <h3>Customer Reviews</h3>
+
+                    {% if item.reviews %}
+
+                        {% for review in item.reviews %}
+
+                            <div class="customer-review">
+
+                                <div class="customer-review-header">
+                                    <strong>
+                                        {{ review.first_name or "Customer" }}
+                                        {{ review.last_name or "" }}
+                                    </strong>
+
+                                    <strong>
+                                        {{ review.rating }} / 5
+                                    </strong>
+                                </div>
+
+                                <p>{{ review.comment }}</p>
+
+                                <small>
+                                    Submitted:
+                                    {{ review.created_at }}
+                                </small>
+
+                            </div>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <p class="empty-reviews">
+                            No customer reviews have been submitted
+                            for this flight yet.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+            </article>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty-reviews">
+            <h2>No flights found</h2>
+            <p>
+                There are currently no flights associated with
+                {{ airline }}.
+            </p>
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

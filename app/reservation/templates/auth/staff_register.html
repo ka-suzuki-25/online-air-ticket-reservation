@@ -1,0 +1,89 @@
+
+{% extends "base.html" %}
+
+{% block title %}Staff Registration | Aurelia Airways{% endblock %}
+
+{% block content %}
+
+<section class="form-page">
+
+    <div class="form-heading">
+        <p class="eyebrow">AIRLINE STAFF ACCOUNT</p>
+        <h1>Welcome to the team.</h1>
+        <p>Register your airline staff account.</p>
+    </div>
+
+<form class="registration-form"
+      method="POST"
+      action="{{ url_for('auth.staff_register') }}">
+        <div class="form-grid">
+
+            <div class="form-field">
+                <label for="username">Username *</label>
+                <input type="text" id="username"
+                       name="username" required>
+            </div>
+
+            <div class="form-field">
+                <label for="first_name">First Name *</label>
+                <input type="text" id="first_name"
+                       name="first_name" required>
+            </div>
+
+            <div class="form-field">
+                <label for="last_name">Last Name *</label>
+                <input type="text" id="last_name"
+                       name="last_name" required>
+            </div>
+
+            <div class="form-field">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email"
+                       name="email" required>
+            </div>
+
+            <div class="form-field full-width">
+                <label for="airline">Airline Name *</label>
+                <input type="text" id="airline"
+                       name="airline" required>
+            </div>
+            <div class="form-field full-width">
+    <label for="invitation_code">Staff Invitation Code *</label>
+    <input
+        type="password"
+        id="invitation_code"
+        name="invitation_code"
+        autocomplete="off"
+        required
+    >
+</div>
+
+            <div class="form-field">
+                <label for="password">Password *</label>
+                <input type="password" id="password"
+                       name="password" minlength="8" required>
+            </div>
+
+            <div class="form-field">
+                <label for="confirm_password">Confirm Password *</label>
+                <input type="password" id="confirm_password"
+                       name="confirm_password" minlength="8" required>
+            </div>
+
+        </div>
+
+        <button type="submit" class="register-button">
+            Create Staff Account
+        </button>
+
+        <p class="form-back">
+            <a href="{{ url_for('auth.register') }}">
+                ← Back to registration options
+            </a>
+        </p>
+
+    </form>
+
+</section>
+
+{% endblock %}

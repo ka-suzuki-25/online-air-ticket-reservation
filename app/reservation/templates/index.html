@@ -1,0 +1,146 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Aurelia Airways | Discover Your Journey
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+        <p class="eyebrow">THE ART OF TRAVEL</p>
+
+        <h1>
+            Beyond the ordinary.
+            <span>Into the extraordinary.</span>
+        </h1>
+
+        <p class="hero-description">
+            Discover exceptional journeys, thoughtful service,
+            and destinations waiting to be explored.
+        </p>
+
+        <a href="#flight-search" class="primary-button">
+            Explore Flights <span>→</span>
+        </a>
+
+        <p class="hero-tagline">YOUR JOURNEY. YOUR WORLD.</p>
+    </div>
+</section>
+
+
+<section class="search-section" id="flight-search">
+
+    <div class="section-heading">
+        <p class="eyebrow">PLAN YOUR JOURNEY</p>
+
+        <h2>Where would you like to go?</h2>
+
+        <p>Find your next destination with Aurelia Airways.</p>
+    </div>
+
+    <form class="flight-search" id="flightSearchForm">
+
+        <div class="field">
+            <label for="departure">FROM</label>
+            <input
+                type="text"
+                id="departure"
+                name="departure"
+                placeholder="Departure city or airport"
+                required
+            >
+        </div>
+
+        <div class="field">
+            <label for="arrival">TO</label>
+            <input
+                type="text"
+                id="arrival"
+                name="arrival"
+                placeholder="Destination city or airport"
+                required
+            >
+        </div>
+
+        <div class="field">
+            <label for="travel-date">DEPARTURE DATE</label>
+            <input
+                type="date"
+                id="travel-date"
+                name="travel_date"
+                required
+            >
+        </div>
+
+        <button type="submit" class="primary-button search-button">
+            Search Flights <span>→</span>
+        </button>
+
+    </form>
+
+    <p id="search-message" class="message" aria-live="polite"></p>
+
+</section>
+
+
+<section class="destinations-section" id="destinations">
+
+    <div class="section-heading">
+        <p class="eyebrow">CURATED FOR YOU</p>
+
+        <h2>Explore the world with Aurelia.</h2>
+
+        <p>Every destination tells a different story.</p>
+    </div>
+
+    <div class="destination-grid">
+
+        <article class="destination-card destination-new-york">
+            <span class="country">UNITED STATES</span>
+            <h3>New York</h3>
+            <p>The city that never sleeps.</p>
+            <span class="destination-arrow">Discover →</span>
+        </article>
+
+        <article class="destination-card destination-paris">
+            <span class="country">FRANCE</span>
+            <h3>Paris</h3>
+            <p>Experience timeless elegance.</p>
+            <span class="destination-arrow">Discover →</span>
+        </article>
+
+        <article class="destination-card destination-tokyo">
+            <span class="country">JAPAN</span>
+            <h3>Tokyo</h3>
+            <p>Discover a world of contrasts.</p>
+            <span class="destination-arrow">Discover →</span>
+        </article>
+
+    </div>
+
+</section>
+
+
+<section class="about-section" id="about">
+
+    <p class="eyebrow">A MORE THOUGHTFUL WAY TO FLY</p>
+
+    <h2>Every journey deserves something exceptional.</h2>
+
+    <p>
+        From discovering your next destination to managing your
+        reservations, Aurelia Airways brings your travel experience
+        together in one place.
+    </p>
+
+    <a href="{{ url_for('auth.register') }}" class="text-link">
+        Begin your journey →
+    </a>
+
+</section>
+
+{% endblock %}

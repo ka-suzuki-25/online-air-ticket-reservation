@@ -1,0 +1,181 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+My Previous Flights | Aurelia Airways
+{% endblock %}
+
+{% block content %}
+
+<section class="reviews-page">
+
+    <div class="section-heading">
+        <p class="eyebrow">YOUR TRAVEL HISTORY</p>
+        <h1>My Previous Flights</h1>
+        <p>Look back on your journeys and share your experience.</p>
+    </div>
+
+    {% if flights %}
+
+        <div class="previous-flights-list">
+
+            {% for flight in flights %}
+
+                <article class="previous-flight-card">
+
+                    <div class="flight-card-header">
+                        <div>
+                            <p class="eyebrow">COMPLETED FLIGHT</p>
+                            <h2>{{ flight["airline_name"] }}</h2>
+                            <p>Flight {{ flight["flight_number"] }}</p>
+                        </div>
+
+                        <span class="flight-status">Completed</span>
+                    </div>
+
+                    <div class="flight-route">
+
+                        <div>
+                            <span class="route-label">FROM</span>
+                            <h3>{{ flight["dep_airport"] }}</h3>
+                            <p>{{ flight["dep_datetime"] }}</p>
+                        </div>
+
+                        <div class="route-arrow">→</div>
+
+                        <div>
+                            <span class="route-label">TO</span>
+                            <h3>{{ flight["arr_airport"] }}</h3>
+                            <p>{{ flight["arr_datetime"] }}</p>
+                        </div>
+
+                    </div>
+
+                    <div class="review-section">
+
+                        {% if flight["rating"] is not none %}
+
+                            <div class="existing-review">
+                                <h3>Your review</h3>
+
+                                <p class="review-stars">
+                                    {% for star in range(1, 6) %}
+                                        {% if star <= flight["rating"] %}
+                                            ★
+                                        {% else %}
+                                            ☆
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
+
+                                <p>{{ flight["comment"] }}</p>
+
+                                <p class="review-date">
+                                    Submitted: {{ flight["review_date"] }}
+                                </p>
+                            </div>
+
+                        {% else %}
+
+                            <h3>Share your experience</h3>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for('reviews.submit_review') }}"
+                                class="review-form"
+                            >
+
+                                <input
+                                    type="hidden"
+                                    name="airline_name"
+                                    value="{{ flight['airline_name'] }}"
+                                >
+
+                                <input
+                                    type="hidden"
+                                    name="flight_number"
+                                    value="{{ flight['flight_number'] }}"
+                                >
+
+                                <input
+                                    type="hidden"
+                                    name="dep_datetime"
+                                    value="{{ flight['dep_datetime'] }}"
+                                >
+
+                                <div class="rating-field">
+                                    <label>Select your rating</label>
+
+                                    <div class="rating-options">
+
+                                        {% for star in range(1, 6) %}
+
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    name="rating"
+                                                    value="{{ star }}"
+                                                    required
+                                                >
+                                                <span>{{ star }} ★</span>
+                                            </label>
+
+                                        {% endfor %}
+
+                                    </div>
+                                </div>
+
+                                <div class="comment-field">
+                                    <label for="comment-{{ loop.index }}">
+                                        Your comments
+                                    </label>
+
+                                    <textarea
+                                        id="comment-{{ loop.index }}"
+                                        name="comment"
+                                        rows="4"
+                                        maxlength="2000"
+                                        placeholder="Tell us about your flight experience..."
+                                        required
+                                    ></textarea>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    class="primary-button"
+                                >
+                                    Submit Review →
+                                </button>
+
+                            </form>
+
+                        {% endif %}
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="no-flights-message">
+            <h2>No completed flights yet</h2>
+
+            <p>
+                Once you complete a flight purchased through Aurelia Airways,
+                it will appear here and you can share your experience.
+            </p>
+
+            <a href="{{ url_for('home') }}" class="primary-button">
+                Explore Flights →
+            </a>
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}
