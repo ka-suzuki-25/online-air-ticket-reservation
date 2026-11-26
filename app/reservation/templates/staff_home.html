@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Staff home{% endblock %}
+{% block content %}
+<h1>Airline staff</h1>
+<p class="muted">You are signed in for {{ session.get('airline_name') }}.</p>
+
+<div class="cards">
+  <a href="{{ url_for('staff.change_status') }}">
+    <strong>Change flight status</strong><span>On time, delayed or canceled</span>
+  </a>
+  <a href="{{ url_for('auth.logout') }}">
+    <strong>Log out</strong><span>End your session</span>
+  </a>
+</div>
+{% endblock %}
