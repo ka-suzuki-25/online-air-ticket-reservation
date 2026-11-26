@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Air Ticket Reservation{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <a class="brand" href="{{ url_for('public.index') }}">Air Ticket Reservation</a>
+    <nav>
+      {% if session.get('user_type') == 'customer' %}
+        <a href="{{ url_for('customer.home') }}">My Home</a>
+        <span class="who">{{ session['username'] }}</span>
+        <a href="{{ url_for('auth.logout') }}">Log out</a>
+      {% elif session.get('user_type') == 'staff' %}
+        <a href="{{ url_for('staff.home') }}">Staff Home</a>
+        <span class="who">{{ session['username'] }} &middot; {{ session.get('airline_name') }}</span>
+        <a href="{{ url_for('auth.logout') }}">Log out</a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}">Log in</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main>
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+      <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

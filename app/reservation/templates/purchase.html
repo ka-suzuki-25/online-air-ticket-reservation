@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Purchase ticket{% endblock %}
+{% block content %}
+<h1>Purchase a ticket</h1>
+
+<table>
+  <tr><th>Airline</th><th>Flight</th><th>From</th><th>To</th>
+      <th>Departs</th><th>Arrives</th><th>Status</th><th>Seats left</th><th>Price</th></tr>
+  <tr>
+    <td>{{ flight.airline_name }}</td>
+    <td>{{ flight.flight_number }}</td>
+    <td>{{ flight.dep_airport }} <span class="muted">({{ flight.dep_city }})</span></td>
+    <td>{{ flight.arr_airport }} <span class="muted">({{ flight.arr_city }})</span></td>
+    <td>{{ flight.dep_datetime }}</td>
+    <td>{{ flight.arr_datetime }}</td>
+    <td>{{ flight.status }}</td>
+    <td>{{ seats_left }}</td>
+    <td><strong>${{ price }}</strong></td>
+  </tr>
+</table>
+
+{% if price > flight.base_price %}
+<p class="muted">This flight is at least 60% booked, so 25% has been added to
+the base price of ${{ flight.base_price }}.</p>
+{% endif %}
+
+<h2>Payment</h2>
+<form method="post">
+  <input type="hidden" name="airline_name"  value="{{ flight.airline_name }}">
+  <input type="hidden" name="flight_number" value="{{ flight.flight_number }}">
+  <input type="hidden" name="dep_datetime"  value="{{ flight.dep_datetime }}">
+  <label>Card type
+    <select name="card_type" required>
+      <option value="credit">Credit</option>
+      <option value="debit">Debit</option>
+    </select>
+  </label>
+  <label>Card number <input name="card_number" required placeholder="4111111111111111"></label>
+  <label>Name on card <input name="name_on_card" required></label>
+  <label>Expiration date <input type="date" name="card_expiration" required></label>
+  <button type="submit">Pay ${{ price }}</button>
+</form>
+<p class="muted">The security code is never asked for or stored.</p>
+{% endblock %}

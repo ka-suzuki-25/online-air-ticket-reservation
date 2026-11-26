@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}My home{% endblock %}
+{% block content %}
+<h1>Welcome{% if me %}, {{ me.name }}{% endif %}</h1>
+
+<div class="cards">
+  <a href="{{ url_for('customer.my_flights') }}">
+    <strong>View my flights</strong><span>Tickets you have purchased</span>
+  </a>
+  <a href="{{ url_for('customer.search') }}">
+    <strong>Search for flights</strong><span>Find and buy a ticket</span>
+  </a>
+  <a href="{{ url_for('public.status') }}">
+    <strong>Check flight status</strong><span>On time, delayed or canceled</span>
+  </a>
+  <a href="{{ url_for('auth.logout') }}">
+    <strong>Log out</strong><span>End your session</span>
+  </a>
+</div>
+
+<h2>Your next trips</h2>
+{% if upcoming %}
+<table>
+  <tr><th>Ticket</th><th>Airline</th><th>Flight</th><th>From</th><th>To</th>
+      <th>Departs</th><th>Status</th><th>Paid</th></tr>
+  {% for t in upcoming %}
+  <tr>
+    <td>{{ t.ticket_id }}</td><td>{{ t.airline_name }}</td>
+    <td>{{ t.flight_number }}</td><td>{{ t.dep_airport }}</td>
+    <td>{{ t.arr_airport }}</td><td>{{ t.dep_datetime }}</td>
+    <td>{{ t.status }}</td><td>${{ t.sold_price }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="muted">You have no upcoming flights yet.</p>
+{% endif %}
+{% endblock %}

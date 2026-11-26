@@ -1,0 +1,21 @@
+<form method="get" action="{{ action }}">
+  <label>Trip
+    <select name="trip_type">
+      <option value="one_way" {% if trip_type == 'one_way' %}selected{% endif %}>One way</option>
+      <option value="round_trip" {% if trip_type == 'round_trip' %}selected{% endif %}>Round trip</option>
+    </select>
+  </label>
+  <label>From (city or airport)
+    <input name="source" value="{{ source }}" placeholder="JFK or New York">
+  </label>
+  <label>To (city or airport)
+    <input name="destination" value="{{ destination }}" placeholder="PVG or Shanghai">
+  </label>
+  <label>Departure date
+    <input type="date" name="dep_date" value="{{ dep_date }}">
+  </label>
+  <label>Return date
+    <input type="date" name="return_date" value="{{ return_date }}">
+  </label>
+  <button type="submit">Search</button>
+</form>

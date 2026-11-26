@@ -1,0 +1,37 @@
+{# Shared flight listing. Set buyable=true to show a Purchase button. #}
+{% if rows %}
+<table>
+  <tr>
+    <th>Airline</th><th>Flight</th><th>From</th><th>To</th>
+    <th>Departs</th><th>Arrives</th><th>Status</th><th>Price</th><th>Seats left</th>
+    {% if buyable %}<th></th>{% endif %}
+  </tr>
+  {% for f in rows %}
+  <tr>
+    <td>{{ f.airline_name }}</td>
+    <td>{{ f.flight_number }}</td>
+    <td>{{ f.dep_airport }} <span class="muted">({{ f.dep_city }})</span></td>
+    <td>{{ f.arr_airport }} <span class="muted">({{ f.arr_city }})</span></td>
+    <td>{{ f.dep_datetime }}</td>
+    <td>{{ f.arr_datetime }}</td>
+    <td>{{ f.status }}</td>
+    <td>${{ current_price(f) }}</td>
+    <td>{{ seats_left(f) }}</td>
+    {% if buyable %}
+    <td>
+      {% if seats_left(f) > 0 %}
+      <a href="{{ url_for('customer.purchase',
+                          airline_name=f.airline_name,
+                          flight_number=f.flight_number,
+                          dep_datetime=f.dep_datetime) }}">Purchase</a>
+      {% else %}
+      <span class="muted">Full</span>
+      {% endif %}
+    </td>
+    {% endif %}
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="muted">No flights matched.</p>
+{% endif %}

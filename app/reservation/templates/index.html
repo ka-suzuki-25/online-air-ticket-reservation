@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Air Ticket Reservation{% endblock %}
+{% block content %}
+<h1>Welcome</h1>
+<p class="muted">You can search flights and check flight status without logging in.</p>
+
+<div class="cards">
+  <a href="{{ url_for('public.search') }}">
+    <strong>Search for flights</strong>
+    <span>One way or round trip, by city or airport</span>
+  </a>
+  <a href="{{ url_for('public.status') }}">
+    <strong>Check flight status</strong>
+    <span>On time, delayed or canceled</span>
+  </a>
+  <a href="{{ url_for('auth.login') }}">
+    <strong>Log in</strong>
+    <span>Customers and airline staff</span>
+  </a>
+</div>
+{% endblock %}

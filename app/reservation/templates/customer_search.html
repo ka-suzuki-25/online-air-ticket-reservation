@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Search flights{% endblock %}
+{% block content %}
+<h1>Search for flights</h1>
+{% with action = url_for('customer.search') %}
+  {% include '_search_form.html' %}
+{% endwith %}
+
+{% if searched %}
+  <h2>{% if trip_type == 'round_trip' %}Outbound flights{% else %}Matching flights{% endif %}</h2>
+  {% with rows = outbound, buyable = true %}{% include '_flight_table.html' %}{% endwith %}
+
+  {% if trip_type == 'round_trip' %}
+  <h2>Return flights</h2>
+  {% with rows = inbound, buyable = true %}{% include '_flight_table.html' %}{% endwith %}
+  {% endif %}
+{% endif %}
+{% endblock %}

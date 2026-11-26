@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Change flight status{% endblock %}
+{% block content %}
+<h1>Change status of flights</h1>
+<p class="muted">Flights operated by {{ airline }}. You can only change your
+own airline's flights.</p>
+
+{% if flights %}
+<table>
+  <tr><th>Flight</th><th>From</th><th>To</th><th>Departs</th><th>Arrives</th>
+      <th>Status</th><th>Change to</th></tr>
+  {% for f in flights %}
+  <tr>
+    <td>{{ f.flight_number }}</td>
+    <td>{{ f.dep_airport }}</td>
+    <td>{{ f.arr_airport }}</td>
+    <td>{{ f.dep_datetime }}</td>
+    <td>{{ f.arr_datetime }}</td>
+    <td>{{ f.status }}</td>
+    <td>
+      <form method="post" style="padding:0;border:0;background:none;gap:.4rem">
+        <input type="hidden" name="flight_number" value="{{ f.flight_number }}">
+        <input type="hidden" name="dep_datetime"  value="{{ f.dep_datetime }}">
+        <select name="status">
+          {% for s in statuses %}
+          <option value="{{ s }}" {% if s == f.status %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit">Update</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p class="muted">No flights found for {{ airline }}.</p>
+{% endif %}
+{% endblock %}
